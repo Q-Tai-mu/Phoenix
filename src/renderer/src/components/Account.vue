@@ -1,7 +1,83 @@
 <script setup lang="ts">
+import { useMessage } from 'naive-ui'
+import { useIpcRenderer } from '@vueuse/electron'
+const ipcRenderer = useIpcRenderer()
+
+const message = useMessage()
+
 const emits = defineEmits(['FatherClick'])
 const handelClick = () => {
   emits('FatherClick')
+}
+
+const callRestoreHealthPmc = () => {
+  ipcRenderer.send('Call_RestoreHealth_Pmc') // 向主进程通信
+  message.success('恢复pmc健康状态', {
+    keepAliveOnHover: true
+  })
+}
+
+const callRestoreHealthScav = () => {
+  ipcRenderer.send('Call_RestoreHealth_Scav') // 向主进程通信
+  message.success('恢复scav健康状态', {
+    keepAliveOnHover: true
+  })
+}
+
+const removeNegative = () => {
+  ipcRenderer.send('Call_remove_Negative') // 向主进程通信
+  message.success('移除负面效果', {
+    keepAliveOnHover: true
+  })
+}
+
+const addItemm3a1 = () => {
+  ipcRenderer.send('Call_add_item_m3a1') // 向主进程通信
+  message.success('添加m3a1成功', {
+    keepAliveOnHover: true
+  })
+}
+
+const addItemM2 = () => {
+  ipcRenderer.send('Call_add_item_m2') // 向主进程通信
+  message.success('添加M2战术剑成功', {
+    keepAliveOnHover: true
+  })
+}
+
+const addVelocity = () => {
+  ipcRenderer.send('Call_add_item_Velocity') // 向主进程通信
+  message.success('添加警用多用途单挂成功', {
+    keepAliveOnHover: true
+  })
+}
+
+const add6B43 = () => {
+  ipcRenderer.send('Call_add_item_6B43') // 向主进程通信
+  message.success('添加俄重成功', {
+    keepAliveOnHover: true
+  })
+}
+
+const add6b47 = () => {
+  ipcRenderer.send('Call_add_item_6b47') // 向主进程通信
+  message.success('添加俄头盔成功', {
+    keepAliveOnHover: true
+  })
+}
+
+const maxLevel = () => {
+  ipcRenderer.send('Call_add_item_MaxLevel') // 向主进程通信
+  message.success('满级经验', {
+    keepAliveOnHover: true
+  })
+}
+
+const addMoney = () => {
+  ipcRenderer.send('Call_add_item_Money') // 向主进程通信
+  message.success('添加金钱成功', {
+    keepAliveOnHover: true
+  })
 }
 //这个是Pmc信息
 </script>
@@ -86,7 +162,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">恢复PMC血量</p>
-            <n-button size="tiny">执行特权</n-button>
+            <n-button size="tiny" @click="callRestoreHealthPmc">执行特权</n-button>
           </div>
         </div>
       </div>
@@ -97,7 +173,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">恢复Scav血量</p>
-            <n-button size="tiny">执行特权</n-button>
+            <n-button size="tiny" @click="callRestoreHealthScav">执行特权</n-button>
           </div>
         </div>
       </div>
@@ -107,8 +183,8 @@ const handelClick = () => {
           style="justify-content: flex-start"
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
-            <p style="color: #c4c4c4">移除骨折,出血</p>
-            <n-button size="tiny">执行特权</n-button>
+            <p style="color: #c4c4c4">移除骨折,出血(负面效果)</p>
+            <n-button size="tiny" @click="removeNegative">执行特权</n-button>
           </div>
         </div>
       </div>
@@ -119,7 +195,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">获得M2战术剑</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <n-button size="tiny" @click="addItemM2">放入仓库</n-button>
           </div>
         </div>
       </div>
@@ -130,7 +206,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">获得转轮榴弹发射器</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <n-button size="tiny" @click="addItemm3a1">放入仓库</n-button>
           </div>
         </div>
       </div>
@@ -141,7 +217,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">获得俄重甲</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <n-button size="tiny" @click="add6B43">放入仓库</n-button>
           </div>
         </div>
       </div>
@@ -152,7 +228,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">获得警用单挂</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <n-button size="tiny" @click="addVelocity">放入仓库</n-button>
           </div>
         </div>
       </div>
@@ -162,8 +238,8 @@ const handelClick = () => {
           style="justify-content: flex-start"
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
-            <p style="color: #c4c4c4">获得俄头盔（不能佩戴耳机）</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <p style="color: #c4c4c4">获得俄头盔</p>
+            <n-button size="tiny" @click="add6b47">放入仓库</n-button>
           </div>
         </div>
       </div>
@@ -174,7 +250,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">满级经验</p>
-            <n-button size="tiny">执行特权</n-button>
+            <n-button size="tiny" @click="maxLevel">执行特权</n-button>
           </div>
         </div>
       </div>
@@ -185,7 +261,7 @@ const handelClick = () => {
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between">
             <p style="color: #c4c4c4">超多的金钱</p>
-            <n-button size="tiny">放入仓库</n-button>
+            <n-button size="tiny" @click="addMoney">放入仓库</n-button>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
  * @Description:
  * @Author: KeHan
  * @Date: 2024-02-05 15:04:44
- * @LastEditTime: 2024-03-07 18:31:02
+ * @LastEditTime: 2024-03-08 13:37:03
  * @LastEditors: KeHan
  */
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
@@ -14,6 +14,19 @@ import readDirectory from './readDirectory'
 import { FileData } from './readDirectory'
 import readJson from './readJson'
 import writeJson from './writeJson'
+import {
+  callRestoreHealthPmc,
+  callRestoreHealthScav,
+  removeNegative,
+  addItemM2,
+  addMoney,
+  addItemM3A1,
+  addVelocity,
+  add6B43,
+  add6b47,
+  MaxLevel
+} from './personalInformation'
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -28,9 +41,11 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      // enableRemoteModule: true,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 
@@ -50,6 +65,116 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  //以下代码是修改存档操作
+
+  //恢复Pmc:_, ...args
+  ipcMain.on('Call_RestoreHealth_Pmc', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      callRestoreHealthPmc(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //恢复scav
+  ipcMain.on('Call_RestoreHealth_Scav', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      callRestoreHealthScav(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添加m2
+  ipcMain.on('Call_add_item_m2', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      addItemM2(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添加Money
+  ipcMain.on('Call_add_item_Money', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      addMoney(targetObj)
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //移除负面效果
+  ipcMain.on('Call_remove_Negative', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      removeNegative(targetObj)
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添加m3a1
+  ipcMain.on('Call_add_item_m3a1', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      addItemM3A1(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添加警用多用途单挂
+  ipcMain.on('Call_add_item_Velocity', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      addVelocity(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添俄重
+  ipcMain.on('Call_add_item_6B43', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      add6B43(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //添俄头盔
+  ipcMain.on('Call_add_item_6b47', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      add6b47(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
+
+  //满级经验
+  ipcMain.on('Call_add_item_MaxLevel', () => {
+    const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
+    if (fileData.fileDataList) {
+      const targetObj = readJson(fileData.fileDataList[0].filePath)
+      MaxLevel(targetObj)
+
+      writeJson(targetObj, fileData.fileDataList[0].filePath)
+    }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -89,130 +214,3 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
-
-//以下代码是修改存档操作
-
-//恢复Pmc:_, ...args
-ipcMain.on('Call_RestoreHealth_Pmc', () => {
-  //读取指定目录下的塔克夫
-  const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
-  if (fileData.fileDataList) {
-    const targetObj = readJson(fileData.fileDataList[0].filePath)
-    targetObj.characters.pmc.Health.BodyParts.Head.Health.Current = 35
-    targetObj.characters.pmc.Health.BodyParts.Chest.Health.Current = 85
-    targetObj.characters.pmc.Health.BodyParts.Stomach.Health.Current = 70
-    targetObj.characters.pmc.Health.BodyParts.RightArm.Health.Current = 60
-    targetObj.characters.pmc.Health.BodyParts.LeftArm.Health.Current = 60
-    targetObj.characters.pmc.Health.BodyParts.RightLeg.Health.Current = 65
-    targetObj.characters.pmc.Health.BodyParts.LeftLeg.Health.Current = 65
-    targetObj.characters.pmc.Health.Hydration.Current = 100
-    targetObj.characters.pmc.Health.Energy.Current = 100
-    //写入数据
-    writeJson(targetObj, fileData.fileDataList[0].filePath)
-    // console.log('参数：', ..)
-  }
-})
-
-//恢复scav
-ipcMain.on('Call_RestoreHealth_Scav', () => {
-  //读取指定目录下的塔克夫
-  const fileData: FileData = readDirectory('D:\\Garme\\Client.0.13.5.3.26535\\user\\profiles')
-  if (fileData.fileDataList) {
-    const targetObj = readJson(fileData.fileDataList[0].filePath)
-    targetObj.characters.scav.Health.BodyParts.Head.Health.Current = 35
-    targetObj.characters.scav.Health.BodyParts.Chest.Health.Current = 85
-    targetObj.characters.scav.Health.BodyParts.Stomach.Health.Current = 70
-    targetObj.characters.scav.Health.BodyParts.RightArm.Health.Current = 60
-    targetObj.characters.scav.Health.BodyParts.LeftArm.Health.Current = 60
-    targetObj.characters.scav.Health.BodyParts.RightLeg.Health.Current = 65
-    targetObj.characters.scav.Health.BodyParts.LeftLeg.Health.Current = 65
-    targetObj.characters.scav.Health.Hydration.Current = 100
-    targetObj.characters.scav.Health.Energy.Current = 100
-    //写入数据
-    writeJson(targetObj, fileData.fileDataList[0].filePath)
-    // console.log('参数：', ..)
-  }
-})
-
-
-//
-/**
- * // 删除Effects属性
-  for (let part in obj.BodyParts) {
-    delete obj.BodyParts[part].Effects;
-  }
-  "BodyParts": {
-					"Chest": {
-						"Health": {
-							"Current": 26,
-							"Maximum": 85
-						},
-						"Effects": {
-							"LightBleeding": {
-								"Time": -1
-							}
-						}
-					},
-					"Head": {
-						"Health": {
-							"Current": 15,
-							"Maximum": 50
-						}
-					},
-					"LeftArm": {
-						"Health": {
-							"Current": 18,
-							"Maximum": 60
-						}
-					},
-					"LeftLeg": {
-						"Health": {
-							"Current": 20,
-							"Maximum": 65
-						}
-					},
-					"RightArm": {
-						"Health": {
-							"Current": 18,
-							"Maximum": 60
-						}
-					},
-					"RightLeg": {
-						"Health": {
-							"Current": 20,
-							"Maximum": 65
-						}
-					},
-					"Stomach": {
-						"Health": {
-							"Current": 21,
-							"Maximum": 70
-						}
-					}
-				},
-
-  效果就是在：
-  "Chest": {
-						"Health": {
-							"Current": 26,
-							"Maximum": 85
-						},
-						"Effects": {
-							"LightBleeding": {
-								"Time": -1
-							}
-						}
-					},中添加了Effects属性并增加负面效果
-          骨折：Fracture
-          销毁：Destroyed
-          中毒：Poisoning
-          颤栗：Tremor
-          疼痛：Pain
-          重度出血：HeavyBleeding
-          轻度出血：LightBleeding
-          脱水：Dehydration
-          饥饿：Exhaustion
- */
-
-
-//在存档中搜索：Inventory，这个是仓库
